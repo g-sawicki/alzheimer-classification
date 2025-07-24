@@ -1,6 +1,9 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
   tests:
@@ -35,6 +38,11 @@ jobs:
 
     - name: Install project
       run: poetry install --no-interaction
+
+    - name: Run pre-commit
+      run: |
+        source .venv/bin/activate
+        pre-commit run --all-files
 
     - name: Run tests
       run: |
