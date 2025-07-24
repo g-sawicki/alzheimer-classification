@@ -3,37 +3,12 @@ import os
 import kagglehub
 import numpy as np
 import pytorch_lightning as pl
-import torch
 from sklearn.model_selection import StratifiedShuffleSplit
 from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import datasets, transforms
 
-
-class DatasetFromSubset(Dataset):
-    """
-    A custom Dataset class that applies a transformation to a subset of a dataset.
-
-    Args:
-        subset (torch.utils.data.Subset): A subset of a dataset.
-        transform (transforms.Compose, optional): A transform applied to images.
-
-    Methods:
-        __getitem__(index): Retrieves the item at the specified index, applying the transform if provided.
-        __len__(): Returns the length of the subset.
-    """
-
-    def __init__(self, subset: Subset, transform: transforms.Compose | None = None):
-        self.subset = subset
-        self.transform = transform
-
-    def __getitem__(self, index: int) -> tuple[torch.Tensor, int]:
-        x, y = self.subset[index]
-        if self.transform:
-            x = self.transform(x)
-        return x, y
-
-    def __len__(self) -> int:
-        return len(self.subset)
+from alzheimer_classification.data.data_utils import stratified_split
+from alzheimer_classification.data.dataset_from_subset import DatasetFromSubset
 
 
 class AlzheimerDataModule(pl.LightningDataModule):
@@ -76,35 +51,13 @@ class AlzheimerDataModule(pl.LightningDataModule):
             stage (str): Stage of setup (fit or test).
         """
         augmented_dir = os.path.join(self.root_dir, "AugmentedAlzheimerDataset")
-        full_dataset = datasets.ImageFolder(augmented_dir)
+        image_folder = datasets.ImageFolder(augmented_dir)
 
-        targets = [label for _, label in full_dataset.samples]
+        train_subset, val_subset, test_subset = stratified_split(image_folder)
 
-        # First split: train_val (80%) and test (20%)
-        splitter1 = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-        train_val_idx, test_idx = next(splitter1.split(np.zeros(len(targets)), targets))
-
-        # Create test set
-        test_dataset = Subset(full_dataset, test_idx)
-
-        # Now split train_val into train (80% of 80%) and val (20% of 80%)
-        train_val_targets = [targets[i] for i in train_val_idx]
-        splitter2 = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-        train_idx, val_idx = next(
-            splitter2.split(np.zeros(len(train_val_targets)), train_val_targets)
-        )
-
-        train_dataset = Subset(full_dataset, [train_val_idx[i] for i in train_idx])
-        val_dataset = Subset(full_dataset, [train_val_idx[i] for i in val_idx])
-
-        # Apply transforms
-        self.train_dataset = DatasetFromSubset(
-            train_dataset, transform=self.train_transform
-        )
-        self.val_dataset = DatasetFromSubset(val_dataset, transform=self.test_transform)
-        self.test_dataset = DatasetFromSubset(
-            test_dataset, transform=self.test_transform
-        )
+        self.train_dataset = DatasetFromSubset(train_subset, self.train_transform)
+        self.val_dataset = DatasetFromSubset(val_subset, self.test_transform)
+        self.test_dataset = DatasetFromSubset(test_subset, self.test_transform)
 
     def train_dataloader(self) -> DataLoader:
         """

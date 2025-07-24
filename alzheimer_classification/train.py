@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import MLFlowLogger
 
-from alzheimer_classification.datasets.alzheimer_dataset import AlzheimerDataModule
+from alzheimer_classification.data.alzheimer_data_module import AlzheimerDataModule
 from alzheimer_classification.models import get_model
 
 
