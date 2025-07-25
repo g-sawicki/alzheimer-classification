@@ -1,21 +1,14 @@
 repos:
-  - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.5
     hooks:
-      - id: isort
-        name: isort (python)
-        args: ["--profile", "black", "--filter-files"]
-  - repo: https://github.com/ambv/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-        args: ["--ignore=E501,F401,W503"]
+      - id: ruff-check
+        args: [--fix]
+        types: [python]
+      - id: ruff-format
+        types: [python]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.1
+    rev: v1.17.0
     hooks:
       - id: mypy
         args:
@@ -30,22 +23,13 @@ repos:
         additional_dependencies:
           - types-click
           - types-requests
-  # - repo: https://github.com/PyCQA/pydocstyle
-  #   rev: 6.1.1
-  #   hooks:
-  #     - id: pydocstyle
-  #       args: ["--ignore=D100"]
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
-    hooks:
-      - id: forbid-crlf
-      - id: remove-crlf
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-toml
       - id: check-yaml
-        args: [--unsafe]
-exclude: backend/tests/files/
