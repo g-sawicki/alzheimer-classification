@@ -1,10 +1,8 @@
 import os
 
 import kagglehub
-import numpy as np
 import pytorch_lightning as pl
-from sklearn.model_selection import StratifiedShuffleSplit
-from torch.utils.data import DataLoader, Dataset, Subset
+from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, transforms
 
 from alzheimer_classification.data.data_utils import stratified_split

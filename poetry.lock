@@ -2094,15 +2094,15 @@ typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "narwhals"
-version = "1.48.0"
+version = "1.48.1"
 description = "Extremely lightweight compatibility layer between dataframe libraries"
 optional = false
 python-versions = ">=3.9"
 groups = ["frontend"]
 markers = "python_version <= \"3.11\" or python_version >= \"3.12\""
 files = [
-    {file = "narwhals-1.48.0-py3-none-any.whl", hash = "sha256:2bbddc3adeed0c5b15ead8fe61f1d5e459f00c1d2fa60921e52a0f9bdc06077d"},
-    {file = "narwhals-1.48.0.tar.gz", hash = "sha256:7243b456cbdb60edb148731a8f9b203f473a373a249ad66c699362508730e63f"},
+    {file = "narwhals-1.48.1-py3-none-any.whl", hash = "sha256:76e3b069cf20a2746d8e227686b959530e98e8018c594a04e5f4f6f77e0872d9"},
+    {file = "narwhals-1.48.1.tar.gz", hash = "sha256:b375cfdfc20b84b5ac0926f34c5c1373eb23ebea48d47bf75e282161cda63e34"},
 ]
 
 [package.extras]
@@ -3366,21 +3366,20 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rich"
-version = "14.0.0"
+version = "14.1.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["backend", "training"]
 markers = "python_version <= \"3.11\" or python_version >= \"3.12\""
 files = [
-    {file = "rich-14.0.0-py3-none-any.whl", hash = "sha256:1c9491e1951aac09caffd42f448ee3d04e58923ffe14993f6e83068dc395d7e0"},
-    {file = "rich-14.0.0.tar.gz", hash = "sha256:82f1bc23a6a21ebca4ae0c45af9bdbc492ed20231dcb63f297d6d1021a9d5725"},
+    {file = "rich-14.1.0-py3-none-any.whl", hash = "sha256:536f5f1785986d6dbdea3c75205c473f970777b4a0d6c6dd1b696aa05a3fa04f"},
+    {file = "rich-14.1.0.tar.gz", hash = "sha256:e497a48b844b0320d45007cdebfeaeed8db2a4f4bcf49f15e455cfc4af11eaa8"},
 ]
 
 [package.dependencies]
 markdown-it-py = ">=2.2.0"
 pygments = ">=2.13.0,<3.0.0"
-typing-extensions = {version = ">=4.0.0,<5.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
