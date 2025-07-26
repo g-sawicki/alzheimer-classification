@@ -13,9 +13,7 @@ if uploaded_file:
 
     if st.button("Run Prediction"):
         files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-        response = requests.post(
-            "http://host.docker.internal:8000/predict", files=files
-        )
+        response = requests.post("http://backend:8000/predict", files=files)
 
         if response.ok:
             result = response.json()
