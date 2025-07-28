@@ -1,27 +1,39 @@
 services:
+  mlflow:
+    build: mlflow
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    networks:
+      - deploy_network
+    command: mlflow server --host 0.0.0.0 -p 5000 --backend-store-uri "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}" --default-artifact-root "${S3_BUCKET_URI}"
+
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     ports:
-      - 8000:8000
+      - "8000:8000"
+    depends_on:
+      - mlflow
+    env_file:
+      - .env
     networks:
       - deploy_network
-    container_name: backend
     environment:
-      - MLFLOW_TRACKING_URI=http://host.docker.internal:8080
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+    ports:
+      - "8501:8501"
     depends_on:
       - backend
-    ports:
-        - 8501:8501
     networks:
       - deploy_network
-    container_name: frontend
 
 networks:
   deploy_network:
