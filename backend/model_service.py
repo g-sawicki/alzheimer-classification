@@ -1,10 +1,10 @@
 import threading
 from io import BytesIO
 
+import mlflow.pytorch
 import torch
 from PIL import Image
 
-import mlflow.pytorch
 from alzheimer_classification.models import VGG16Model
 from alzheimer_classification.utils.definitions import CLASS_NAMES
 

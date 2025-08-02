@@ -1,11 +1,11 @@
 import hydra
+import mlflow
 import pytorch_lightning as pl
 import torch
 from omegaconf import DictConfig
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import MLFlowLogger
 
-import mlflow
 from alzheimer_classification.data.alzheimer_data_module import AlzheimerDataModule
 from alzheimer_classification.models import get_model
 
