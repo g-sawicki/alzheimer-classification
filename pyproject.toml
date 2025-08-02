@@ -33,6 +33,12 @@ torch = {version = "^2.7.1", source = "pytorch_cpu"}
 torchvision = {version = "^0.22.1", source = "pytorch_cpu"}
 mlflow = "^3.1.1"
 boto3 = "^1.39.13"
+httpx = "^0.28.1"
+opentelemetry-distro = "^0.57b0"
+opentelemetry-exporter-otlp = "^1.36.0"
+opentelemetry-instrumentation-fastapi = "^0.57b0"
+opentelemetry-instrumentation-logging = "^0.57b0"
+prometheus-client = "^0.22.1"
 
 [tool.poetry.group.frontend]
 optional = true
@@ -46,6 +52,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.2.0"
 pytest = "^8.4.1"
+locust = "^2.37.14"
 
 
 [[tool.poetry.source]]
