@@ -48,7 +48,7 @@ def health_check() -> HealthCheck:
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)) -> PredictionResponse:
-    logging.debug(f"Predicting an image.")
+    logging.info(f"Predicting an image.")
     if file.content_type not in ["image/png", "image/jpeg", "application/octet-stream"]:
         raise HTTPException(status_code=400, detail="Unsupported file type.")
     try:
@@ -61,7 +61,7 @@ async def predict(file: UploadFile = File(...)) -> PredictionResponse:
 
 @app.post("/reload-model")
 def reload_model(request: ReloadModelRequest) -> ReloadModelResponse:
-    logging.debug(f"Reloading model: {request.model_uri}")
+    logging.info(f"Reloading model: {request.model_uri}")
     try:
         model_service.reload(request.model_uri)
         return ReloadModelResponse(

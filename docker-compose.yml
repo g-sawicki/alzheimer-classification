@@ -10,14 +10,32 @@ x-logging: &default-logging
           expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$'
 
 services:
+  nginx:
+      container_name: nginx
+      restart: unless-stopped
+      image: nginx
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes:
+          - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+          - ./certbot/conf:/etc/letsencrypt
+          - ./certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --keep-until-expiring --email ${CERTBOT_EMAIL} -d ${CERTBOT_DOMAIN} --agree-tos
+
   mlflow:
     build: mlflow
     ports:
       - "5000:5000"
     env_file:
       - .env
-    networks:
-      - deploy_network
     command: mlflow server --host 0.0.0.0 -p 5000 --backend-store-uri "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}" --default-artifact-root "${S3_BUCKET_URI}"
 
   loki:
@@ -25,10 +43,9 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - "3100:3100"
-    networks:
-      - deploy_network
 
   backend:
+    container_name: backend
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -39,8 +56,6 @@ services:
       - loki
     env_file:
       - .env
-    networks:
-      - deploy_network
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - APP_NAME=backend
@@ -50,12 +65,10 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    ports:
-      - "8501:8501"
+#    ports:
+#      - "8501:8501"
     depends_on:
       - backend
-    networks:
-      - deploy_network
 
   prometheus:
     image: prom/prometheus:v3.3.1
@@ -66,8 +79,6 @@ services:
     command:
       - --config.file=/workspace/prometheus.yml
       - --enable-feature=exemplar-storage
-    networks:
-      - deploy_network
     depends_on:
       - loki
     logging: *default-logging
@@ -80,8 +91,6 @@ services:
       - "4318:4318"
     volumes:
       - ./etc/tempo/tempo.yml:/etc/tempo.yml
-    networks:
-      - deploy_network
     depends_on:
       - loki
     logging: *default-logging
@@ -94,13 +103,7 @@ services:
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
       - ./etc/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./etc/dashboards:/etc/grafana/dashboards
-    networks:
-      - deploy_network
     depends_on:
       - loki
       - prometheus
     logging: *default-logging
-
-networks:
-  deploy_network:
-    driver: bridge
